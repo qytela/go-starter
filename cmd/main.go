@@ -86,7 +86,7 @@ func main() {
 			},
 			{
 				Name:  "add-resource",
-				Usage: "Add new resource / collectioon to existing service",
+				Usage: "Add new resource / collection to existing service",
 				Flags: []cli.Flag{
 					&cli.StringFlag{
 						Name:     "service",
