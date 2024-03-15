@@ -1,11 +1,8 @@
 package middleware
 
 import (
-	"{{workDir}}/api/models"
-	"{{workDir}}/api/responses"
 	"{{workDir}}/pkg/auth"
 	"{{workDir}}/pkg/exception"
-	"{{workDir}}/services/users-service/config"
 	"strings"
 
 	"github.com/labstack/echo/v4"
@@ -42,21 +39,6 @@ func Auth(next echo.HandlerFunc) echo.HandlerFunc {
 				Code:    401,
 				Message: "Token is Invalid / Expired",
 			})
-		}
-
-		db := config.DatabaseConnection()
-		sqlDB, _ := db.DB()
-		defer sqlDB.Close()
-
-		var user models.User
-		if err := db.
-			Where("id = ?", claims.UserID).
-			First(&user).Error; err != nil {
-			return responses.NewInvalidCredential()
-		}
-
-		if !user.IsVerified() {
-			return responses.NewNotVerifiedUser()
 		}
 
 		c.Set("UserID", claims.UserID)
