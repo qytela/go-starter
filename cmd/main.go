@@ -20,7 +20,8 @@ func main() {
 		Description: "Getting Started Go Monorepo Project with Template",
 		Commands: []*cli.Command{
 			{
-				Name: "init",
+				Name:  "init",
+				Usage: "Init monorepo project",
 				Action: func(ctx *cli.Context) error {
 					if err := codeshared.NewInitProject(ctx).Init(); err != nil {
 						log.Fatal(err)
@@ -32,18 +33,22 @@ func main() {
 				},
 			},
 			{
-				Name: "add-service",
+				Name:  "add-service",
+				Usage: "Add new monorepo service",
 				Flags: []cli.Flag{
 					&cli.StringFlag{
 						Name:     "name",
+						Usage:    "Service name",
 						Required: true,
 					},
 					&cli.StringFlag{
 						Name:     "port",
+						Usage:    "Service port",
 						Required: true,
 					},
 					&cli.StringFlag{
 						Name:     "module",
+						Usage:    "Module name",
 						Required: true,
 					},
 				},
@@ -58,14 +63,17 @@ func main() {
 				},
 			},
 			{
-				Name: "add-module",
+				Name:  "add-module",
+				Usage: "Add new module to existing service",
 				Flags: []cli.Flag{
 					&cli.StringFlag{
 						Name:     "service",
+						Usage:    "Service name",
 						Required: true,
 					},
 					&cli.StringFlag{
 						Name:     "module",
+						Usage:    "Module name",
 						Required: true,
 					},
 				},
@@ -77,18 +85,22 @@ func main() {
 				},
 			},
 			{
-				Name: "add-resource",
+				Name:  "add-resource",
+				Usage: "Add new resource / collectioon to existing service",
 				Flags: []cli.Flag{
 					&cli.StringFlag{
 						Name:     "service",
+						Usage:    "Service name",
 						Required: true,
 					},
 					&cli.StringFlag{
 						Name:     "resource",
+						Usage:    "Resource name",
 						Required: true,
 					},
 					&cli.BoolFlag{
-						Name: "collection",
+						Name:  "collection",
+						Usage: "Create collection",
 					},
 				},
 				Action: func(ctx *cli.Context) error {
@@ -99,7 +111,8 @@ func main() {
 				},
 			},
 			{
-				Name: "run-services",
+				Name:  "run-services",
+				Usage: "Run all monorepo services",
 				Action: func(ctx *cli.Context) error {
 					cmd := exec.Command("/bin/sh", "-c", "go run ./cmd/run_services.go")
 					cmd.Stdout = os.Stdout
