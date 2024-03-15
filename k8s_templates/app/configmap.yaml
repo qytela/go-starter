@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-configmap
+data:
+  APP_ENV: "development"
+  APP_URL: "http://localhost:8080"
+
+  DATABASE_HOST: "pgsql-service"
+  DATABASE_PORT: "5432"
+  DATABASE_MAX_CONNS: "80"
+  FORWARD_DB_PORT: "5432"
+  
+  RABBITMQ_HOST: "rabbitmq-service"
+  RABBITMQ_PORT: "5672"
+  RABBITMQ_USER: "guest"
+  RABBITMQ_PASS: "guest"
+  
+  REDIS_HOST: "redis-service"
+  REDIS_PORT: "6379"
+  REDIS_PASS: ""
+
+  SMTP_PORT: "587"
+  SMTP_FROM_SENDER: "Go-Lang <golang-noreply@mail.com>"
+
+  PHP_SPREADSHEET_EXECUTABLE_FILE: ""
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: app-configmap-secret
+data:
+  DATABASE_USER: "cG9zdGdyZXM=" # postgres
+  DATABASE_PASS: "cG9zdGdyZXM="  # postgres
+  DATABASE_NAME: ""
+  
+  SMTP_HOST: ""
+  SMTP_USERNAME: ""
+  SMTP_PASSWORD: ""
+
+  JWT_SECRET_KEY: "UmVrcnV0bWVuLUtQSy1CYWNrZW5kLUdvTGFuZy0yMDI0Cg=="

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: pgsql-configmap-secret
+data:
+  PGUSER: "cG9zdGdyZXM=" # postgres
+  POSTGRES_DB: ""
+  POSTGRES_USER: "cG9zdGdyZXM="  # postgres
+  POSTGRES_PASSWORD: "cG9zdGdyZXM="  # postgres

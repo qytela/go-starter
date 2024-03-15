@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgsql-deployment
+spec:
+  selector:
+    matchLabels:
+      app: pgsql-deployment
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: pgsql-deployment
+    spec:
+      containers:
+        - name: pgsql-deployment
+          image: postgres:12-alpine
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - secretRef:
+                name: pgsql-configmap-secret
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: pgsql-pv-claim
