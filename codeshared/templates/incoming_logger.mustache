@@ -1,0 +1,9 @@
+package logger
+
+// IncomingLogger method for logging Incoming Request
+func IncomingLogger(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		MakeLogEntry(c).Info("Incoming Request")
+		return next(c)
+	}
+}

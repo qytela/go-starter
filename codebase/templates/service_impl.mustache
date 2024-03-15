@@ -1,0 +1,40 @@
+package services
+
+import (
+    "{{workDir}}/services/{{service}}/api/modules/{{module}}/repository"
+
+    "github.com/labstack/echo/v4"
+)
+
+type {{name}}ServiceImpl struct {
+    repo repository.{{name}}Repository
+}
+
+func New{{name}}Service(repo repository.{{name}}Repository) {{name}}Service {
+    return &{{name}}ServiceImpl{repo}
+}
+
+func (s *{{name}}ServiceImpl) Get(c echo.Context) error {
+    // TODO: implement
+    panic("not implement")
+}
+
+func (s *{{name}}ServiceImpl) Show(c echo.Context) error {
+    // TODO: implement
+    panic("not implement")
+}
+
+func (s *{{name}}ServiceImpl) Create(c echo.Context) error {
+    // TODO: implement
+    panic("not implement")
+}
+
+func (s *{{name}}ServiceImpl) Update(c echo.Context) error {
+    // TODO: implement
+    panic("not implement")
+}
+
+func (s *{{name}}ServiceImpl) Delete(c echo.Context) error {
+    // TODO: implement
+    panic("not implement")
+}

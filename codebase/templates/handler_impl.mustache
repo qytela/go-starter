@@ -1,0 +1,40 @@
+package handlers
+
+import (
+    "{{workDir}}/services/{{service}}/api/modules/{{module}}/services"
+
+    "github.com/labstack/echo/v4"
+)
+
+type {{name}}HandlerImpl struct {
+    service services.{{name}}Service
+}
+
+func New{{name}}Handler(service services.{{name}}Service) {{name}}Handler {
+    return &{{name}}HandlerImpl{service}
+}
+
+func (h *{{name}}HandlerImpl) Get(c echo.Context) error {
+    // TODO: implement
+    panic("not implement")
+}
+
+func (h *{{name}}HandlerImpl) Show(c echo.Context) error {
+    // TODO: implement
+    panic("not implement")
+}
+
+func (h *{{name}}HandlerImpl) Create(c echo.Context) error {
+    // TODO: implement
+    panic("not implement")
+}
+
+func (h *{{name}}HandlerImpl) Update(c echo.Context) error {
+    // TODO: implement
+    panic("not implement")
+}
+
+func (h *{{name}}HandlerImpl) Delete(c echo.Context) error {
+    // TODO: implement
+    panic("not implement")
+}

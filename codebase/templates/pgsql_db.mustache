@@ -1,0 +1,42 @@
+package config
+
+import (
+	"fmt"
+	"os"
+	"{{workDir}}/pkg/logger"
+	"strconv"
+	"time"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+)
+
+// DatabaseConnection setup database connection
+func DatabaseConnection() *gorm.DB {
+	var (
+		host        = os.Getenv("DATABASE_HOST")
+		port        = os.Getenv("DATABASE_PORT")
+		user        = os.Getenv("DATABASE_USER")
+		pass        = os.Getenv("DATABASE_PASS")
+		name        = os.Getenv("DATABASE_NAME")
+		maxConns, _ = strconv.Atoi(os.Getenv("DATABASE_MAX_CONNS"))
+	)
+
+	dsn := fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s sslmode=disable TimeZone=Asia/Jakarta", user, pass, host, port, name)
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		PrepareStmt: true,
+	})
+	if err != nil {
+		logger.MakeLogEntry(nil).Panic("Failed to connect database: ", err)
+	}
+
+	sqlDB, err := db.DB()
+	if err != nil {
+		logger.MakeLogEntry(nil).Panic("Failed on sqlDB: ", err)
+	}
+
+	sqlDB.SetMaxOpenConns(maxConns)
+	sqlDB.SetConnMaxLifetime(time.Hour)
+
+	return db
+}

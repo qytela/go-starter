@@ -1,0 +1,14 @@
+package internal
+
+import (
+	"{{workDir}}/services/{{service}}/api/routes"
+
+	"github.com/labstack/echo/v4"
+)
+
+func NewSetupServer(e *echo.Echo, handler *SetupHandler) {
+	apiGroup := e.Group("/api/{{prefix}}")
+
+	// Define routes here or you can separate the file
+	routes.Setup{{name}}{{module}}Routes(apiGroup, handler.{{handlerName}}Handler)
+}

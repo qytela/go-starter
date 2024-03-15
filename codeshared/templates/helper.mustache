@@ -1,0 +1,55 @@
+package utils
+
+import (
+	"encoding/base64"
+	"github.com/labstack/echo/v4"
+	"os"
+)
+
+// ValidateRequest method for validation request
+func ValidateRequest(c echo.Context, req interface{}) error {
+	if err := c.Bind(req); err != nil {
+		return err
+	}
+	if err := c.Validate(req); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// IsPathExists method for check path exists
+func IsPathExists(path string) bool {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return false
+	}
+
+	return true
+}
+
+// IsFIleExists method for check file exists
+func IsFileExists(path string) bool {
+	if _, err := os.Stat(path); !os.IsNotExist(err) {
+		return true
+	}
+
+	return false
+}
+
+// Base64Encode method for convert string to Base64 (shorthand)
+func Base64Encode(text string) string {
+	var encodedText = make([]byte, base64.StdEncoding.EncodedLen(len(text)))
+	base64.StdEncoding.Encode(encodedText, []byte(text))
+
+	return string(encodedText)
+}
+
+// Base64Decode method for convert Base64 to string (shorthand)
+func Base64Decode(encodedText []byte) (string, error) {
+	var decodedText = make([]byte, base64.StdEncoding.DecodedLen(len(encodedText)))
+	if _, err := base64.StdEncoding.Decode(decodedText, encodedText); err != nil {
+		return "", err
+	}
+
+	return string(decodedText), nil
+}

@@ -1,0 +1,13 @@
+package resources
+
+type {{name}}Collection struct {
+	data []interface{}
+}
+
+func New{{name}}Collection(data []interface{}) *{{name}}Collection {
+	return &{{name}}Collection{data}
+}
+
+func (r *{{name}}Collection) ResolveCollection() {
+
+}

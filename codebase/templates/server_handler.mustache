@@ -1,0 +1,22 @@
+package internal
+
+import (
+	"gorm.io/gorm"
+	_{{name}}Handlers "{{workDir}}/services/{{service}}/api/modules/{{moduleName}}/handlers"
+	_{{name}}Repository "{{workDir}}/services/{{service}}/api/modules/{{moduleName}}/repository"
+	_{{name}}Services "{{workDir}}/services/{{service}}/api/modules/{{moduleName}}/services"
+)
+
+type SetupHandler struct {
+	{{name}}Handler _{{name}}Handlers.{{name}}Handler
+}
+
+func NewSetupHandler(db *gorm.DB) *SetupHandler {
+	{{name}}Repo := _{{name}}Repository.New{{name}}Repository(db)
+	{{name}}Service := _{{name}}Services.New{{name}}Service({{name}}Repo)
+	{{name}}Handler := _{{name}}Handlers.New{{name}}Handler({{name}}Service)
+
+	return &SetupHandler{
+		{{name}}Handler: {{name}}Handler,
+	}
+}

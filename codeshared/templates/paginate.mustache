@@ -1,0 +1,113 @@
+package utils
+
+import (
+	"fmt"
+	"math"
+	"strconv"
+	"sync"
+
+	"github.com/labstack/echo/v4"
+	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
+)
+
+type Pagination struct {
+	Rows interface{} `json:"rows"`
+	Meta *Meta       `json:"meta"`
+}
+
+type Meta struct {
+	Limit      int    `json:"limit,omitempty"`
+	Page       int    `json:"page,omitempty"`
+	Sort       string `json:"sort,omitempty"`
+	Descending string `json:"descending,omitempty"`
+	TotalRows  int64  `json:"total_rows"`
+	TotalPages int    `json:"total_pages"`
+}
+
+type Options struct {
+	CountWhere string
+}
+
+func (p *Pagination) GetOffset() int {
+	return (p.GetPage() - 1) * p.GetLimit()
+}
+
+func (p *Pagination) GetLimit() int {
+	if p.Meta.Limit == 0 || p.Meta.Limit > 10000 {
+		p.Meta.Limit = 10
+	}
+
+	return p.Meta.Limit
+}
+
+func (p *Pagination) GetPage() int {
+	if p.Meta.Page == 0 {
+		p.Meta.Page = 1
+	}
+
+	return p.Meta.Page
+}
+
+func (p *Pagination) GetSort() string {
+	if p.Meta.Sort == "" {
+		p.Meta.Sort = "created_at"
+	}
+
+	return p.Meta.Sort
+}
+
+func (p *Pagination) GetDescending() string {
+	if p.Meta.Descending != "asc" && p.Meta.Descending != "desc" {
+		p.Meta.Descending = "asc"
+	}
+
+	return p.Meta.Descending
+}
+
+func (p *Options) GetCount(table string) string {
+	if p.CountWhere != "" {
+		return fmt.Sprintf("SELECT COUNT(*) FROM %s WHERE %s", table, p.CountWhere)
+	}
+
+	return fmt.Sprintf("SELECT COUNT(*) FROM %s", table)
+}
+
+func (p *Options) GetTable(model interface{}) string {
+	s, _ := schema.Parse(model, &sync.Map{}, schema.NamingStrategy{})
+	return s.Table
+}
+
+func Paginate(model interface{}, p *Pagination, opts *Options, db *gorm.DB) func(db *gorm.DB) *gorm.DB {
+	var totalRows int64
+
+	table := opts.GetTable(model)
+	db.Raw(opts.GetCount(table)).Scan(&totalRows)
+
+	totalPages := int(math.Ceil(float64(totalRows) / float64(p.GetLimit())))
+	p.Meta.TotalRows = totalRows
+	p.Meta.TotalPages = totalPages
+
+	return func(db *gorm.DB) *gorm.DB {
+		return db.
+			Offset(p.GetOffset()).
+			Limit(p.GetLimit()).
+			Order(fmt.Sprintf("%s %s", p.GetSort(), p.GetDescending()))
+	}
+}
+
+func SetPaginateParam(c echo.Context) *Pagination {
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	limit, _ := strconv.Atoi(c.QueryParam("limit"))
+	sort := c.QueryParam("sort")
+	descending := c.QueryParam("descending")
+
+	return &Pagination{
+		Meta: &Meta{
+			Page:       page,
+			Limit:      limit,
+			Sort:       sort,
+			Descending: descending,
+		},
+	}
+}

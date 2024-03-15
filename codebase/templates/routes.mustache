@@ -1,0 +1,16 @@
+package routes
+
+import (
+    _{{handlerName}} "{{workDir}}/services/{{service}}/api/modules/{{moduleName}}/handlers"
+
+    "github.com/labstack/echo/v4"
+)
+
+func Setup{{name}}{{module}}Routes(g *echo.Group, handler _{{handlerName}}.{{handlerName}}Handler) {
+	router := g.Group("/{{prefix}}")
+	router.GET("/", handler.Get)
+	router.GET("/", handler.Show)
+	router.POST("/", handler.Create)
+	router.PATCH("/", handler.Update)
+	router.DELETE("/", handler.Delete)
+}

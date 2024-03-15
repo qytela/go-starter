@@ -1,0 +1,59 @@
+package main
+
+import (
+	"context"
+	"github.com/joho/godotenv"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"{{workDir}}/pkg/exception"
+	"{{workDir}}/pkg/logger"
+	"{{workDir}}/pkg/validation"
+	"{{workDir}}/services/{{service}}/config"
+	"{{workDir}}/services/{{service}}/internal"
+	"time"
+)
+
+func main() {
+	// Context deadline
+	_, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+	defer cancel()
+
+	// Load .env file
+	if err := godotenv.Load(); err != nil {
+		logger.MakeLogEntry(nil).Panic("Failed to load .env: ", err)
+	}
+
+	// Init database connection
+	// Open & Close connection every request
+	db := config.DatabaseConnection()
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
+
+	// Init redis connection
+	// Open & Close connection every request
+	rdb := config.RedisConnection()
+	defer rdb.Close()
+
+	e := echo.New()
+
+	// e.Use(logger.IncomingLogger)
+	e.Use(middleware.Recover())
+	e.Use(middleware.CORS())
+
+	// Configuration echo
+	e.HTTPErrorHandler = exception.HTTPErrorHandler
+	e.Validator = validation.NewCustomValidator(db)
+	e.HideBanner = true
+	e.HidePort = true
+
+	// Setup handler & server (routers, services, handlers, ...)
+	handler := internal.NewSetupHandler(db)
+	internal.NewSetupServer(e, handler)
+
+	address := ":{{port}}"
+	logger.MakeLogEntry(nil).Info("Service {{service}}-service started on address ", address)
+
+	if err := e.Start(address); err != nil {
+		logger.MakeLogEntry(nil).Panic(err)
+	}
+}

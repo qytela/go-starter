@@ -1,0 +1,13 @@
+package resources
+
+type {{name}}Resource struct {
+	data interface{}
+}
+
+func New{{name}}Resource(data interface{}) *{{name}}Resource {
+	return &{{name}}Resource{data}
+}
+
+func (r *{{name}}Resource) ResolveResource() {
+
+}

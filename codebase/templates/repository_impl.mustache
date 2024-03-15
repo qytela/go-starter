@@ -1,0 +1,11 @@
+package repository
+
+import "gorm.io/gorm"
+
+type {{name}}RepositoryImpl struct {
+    db *gorm.DB
+}
+
+func New{{name}}Repository(db *gorm.DB) {{name}}Repository {
+    return &{{name}}RepositoryImpl{db}
+}
